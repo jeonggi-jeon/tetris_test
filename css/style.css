@@ -176,6 +176,28 @@ body {
 }
 
 @media (min-width: 901px) {
+  /* PC: 보드는 왼쪽, 점수·레벨·다음·설명·시작은 항상 오른쪽 열 */
+  .game-and-hud {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .board-wrap {
+    flex: 0 0 auto;
+    order: 1;
+  }
+
+  .panel {
+    flex: 0 0 min(240px, 38vw);
+    width: min(240px, 38vw);
+    max-width: 240px;
+    order: 2;
+    align-self: flex-start;
+  }
+
   .touch-controls {
     display: none !important;
   }
