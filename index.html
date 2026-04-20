@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>네온 테트리스</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Noto+Sans+KR:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <div class="bg-aurora" aria-hidden="true"></div>
+
+    <header class="header">
+      <h1 class="title">네온 테트리스</h1>
+      <p class="subtitle">방향키 이동 · ↑ 회전 · 스페이스 하드드롭 · P 일시정지</p>
+    </header>
+
+    <main class="main">
+      <div class="board-wrap" id="boardWrap">
+        <canvas id="gameCanvas" width="320" height="640" aria-label="게임 보드"></canvas>
+        <div class="flash-overlay" id="flashOverlay" aria-hidden="true"></div>
+      </div>
+
+      <aside class="panel">
+        <section class="glass card">
+          <h2 class="card-title">점수</h2>
+          <p class="stat value" id="score">0</p>
+        </section>
+        <section class="glass card">
+          <h2 class="card-title">레벨</h2>
+          <p class="stat value" id="level">1</p>
+        </section>
+        <section class="glass card">
+          <h2 class="card-title">라인</h2>
+          <p class="stat value" id="lines">0</p>
+        </section>
+        <section class="glass card next-card">
+          <h2 class="card-title">다음</h2>
+          <canvas id="nextCanvas" width="120" height="120" aria-label="다음 조각"></canvas>
+        </section>
+
+        <div class="controls-hint glass card">
+          <p>← → 이동</p>
+          <p>↓ 소프트 드롭</p>
+          <p>↑ 회전</p>
+          <p>Space 하드 드롭</p>
+        </div>
+
+        <button type="button" class="btn-primary" id="btnStart">게임 시작</button>
+      </aside>
+    </main>
+
+    <div class="overlay" id="pauseOverlay" hidden>
+      <div class="overlay-box glass">
+        <h2>일시정지</h2>
+        <p>P 또는 Esc로 계속</p>
+      </div>
+    </div>
+
+    <div class="overlay" id="gameOverOverlay" hidden>
+      <div class="overlay-box glass">
+        <h2>게임 오버</h2>
+        <p class="final-score">최종 점수: <span id="finalScore">0</span></p>
+        <button type="button" class="btn-primary" id="btnRestart">다시 하기</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
