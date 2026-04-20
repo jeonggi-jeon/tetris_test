@@ -15,48 +15,63 @@
 
     <header class="header">
       <h1 class="title">네온 테트리스</h1>
-      <p class="subtitle">방향키 이동 · ↑ 회전 · 스페이스 하드드롭 · P 일시정지</p>
+      <p class="subtitle desktop-only-hint">방향키 이동 · ↑ 회전 · 스페이스 하드드롭 · P 일시정지</p>
+      <p class="subtitle mobile-only-hint">우측 버튼으로 조작 · 같은 Wi‑Fi에서 PC 주소로 접속</p>
     </header>
 
     <main class="main">
-      <div class="board-wrap" id="boardWrap">
-        <canvas id="gameCanvas" width="320" height="640" aria-label="게임 보드"></canvas>
-        <div class="flash-overlay" id="flashOverlay" aria-hidden="true"></div>
-      </div>
-
-      <aside class="panel">
-        <section class="glass card">
-          <h2 class="card-title">점수</h2>
-          <p class="stat value" id="score">0</p>
-        </section>
-        <section class="glass card">
-          <h2 class="card-title">레벨</h2>
-          <p class="stat value" id="level">1</p>
-        </section>
-        <section class="glass card">
-          <h2 class="card-title">라인</h2>
-          <p class="stat value" id="lines">0</p>
-        </section>
-        <section class="glass card next-card">
-          <h2 class="card-title">다음</h2>
-          <canvas id="nextCanvas" width="120" height="120" aria-label="다음 조각"></canvas>
-        </section>
-
-        <div class="controls-hint glass card">
-          <p>← → 이동</p>
-          <p>↓ 소프트 드롭</p>
-          <p>↑ 회전</p>
-          <p>Space 하드 드롭</p>
+      <div class="game-and-hud">
+        <div class="board-wrap" id="boardWrap">
+          <canvas id="gameCanvas" width="320" height="640" aria-label="게임 보드"></canvas>
+          <div class="flash-overlay" id="flashOverlay" aria-hidden="true"></div>
         </div>
 
-        <button type="button" class="btn-primary" id="btnStart">게임 시작</button>
+        <aside class="panel">
+          <section class="glass card">
+            <h2 class="card-title">점수</h2>
+            <p class="stat value" id="score">0</p>
+          </section>
+          <section class="glass card">
+            <h2 class="card-title">레벨</h2>
+            <p class="stat value" id="level">1</p>
+          </section>
+          <section class="glass card">
+            <h2 class="card-title">라인</h2>
+            <p class="stat value" id="lines">0</p>
+          </section>
+          <section class="glass card next-card">
+            <h2 class="card-title">다음</h2>
+            <canvas id="nextCanvas" width="120" height="120" aria-label="다음 조각"></canvas>
+          </section>
+
+          <div class="controls-hint glass card desktop-only-hint">
+            <p>← → 이동</p>
+            <p>↓ 소프트 드롭</p>
+            <p>↑ 회전</p>
+            <p>Space 하드 드롭</p>
+          </div>
+
+          <button type="button" class="btn-primary" id="btnStart">게임 시작</button>
+        </aside>
+      </div>
+
+      <aside class="touch-controls" aria-label="터치 조작 패널">
+        <button type="button" class="touch-btn" data-action="rotate" aria-label="회전">↻</button>
+        <div class="touch-row touch-row--lr">
+          <button type="button" class="touch-btn touch-btn--wide" data-action="left" aria-label="왼쪽">←</button>
+          <button type="button" class="touch-btn touch-btn--wide" data-action="right" aria-label="오른쪽">→</button>
+        </div>
+        <button type="button" class="touch-btn" data-action="soft-drop" aria-label="소프트 드롭">↓</button>
+        <button type="button" class="touch-btn touch-btn--accent" data-action="hard-drop" aria-label="하드 드롭">⤓</button>
+        <button type="button" class="touch-btn" data-action="pause" aria-label="일시정지">Ⅱ</button>
       </aside>
     </main>
 
     <div class="overlay" id="pauseOverlay" hidden>
       <div class="overlay-box glass">
         <h2>일시정지</h2>
-        <p>P 또는 Esc로 계속</p>
+        <p class="pause-hint-desktop">P 또는 Esc로 계속</p>
+        <p class="pause-hint-mobile">우측 일시정지 버튼으로 계속</p>
       </div>
     </div>
 

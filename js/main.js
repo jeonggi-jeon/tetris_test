@@ -149,6 +149,58 @@ function runDas(dt) {
   }
 }
 
+function togglePause() {
+  if (!playing || state.gameOver) return;
+  paused = !paused;
+  pauseOverlay.hidden = !paused;
+}
+
+function pressMoveLeft() {
+  if (!playing || paused || state.gameOver) return;
+  if (!keys.left) {
+    keys.left = true;
+    tryMove(state, -1, 0);
+    resetDas();
+  }
+}
+
+function releaseMoveLeft() {
+  keys.left = false;
+}
+
+function pressMoveRight() {
+  if (!playing || paused || state.gameOver) return;
+  if (!keys.right) {
+    keys.right = true;
+    tryMove(state, 1, 0);
+    resetDas();
+  }
+}
+
+function releaseMoveRight() {
+  keys.right = false;
+}
+
+function pressSoftDrop() {
+  if (!playing || paused || state.gameOver) return;
+  keys.down = true;
+}
+
+function releaseSoftDrop() {
+  keys.down = false;
+}
+
+function actionRotate() {
+  if (!playing || paused || state.gameOver) return;
+  tryRotate(state, 1);
+}
+
+function actionHardDrop() {
+  if (!playing || paused || state.gameOver) return;
+  const lr = hardDrop(state);
+  triggerLineFx(lr);
+}
+
 function onKeyDown(e) {
   if (e.code === "ArrowLeft" || e.code === "ArrowRight") {
     e.preventDefault();
@@ -168,50 +220,95 @@ function onKeyDown(e) {
   }
 
   if (e.code === "Escape" || e.code === "KeyP") {
-    if (!state.gameOver) {
-      paused = !paused;
-      pauseOverlay.hidden = !paused;
-    }
+    togglePause();
     return;
   }
 
   if (paused || state.gameOver) return;
 
   if (e.code === "ArrowLeft") {
-    if (!keys.left) {
-      keys.left = true;
-      tryMove(state, -1, 0);
-      resetDas();
-    }
+    pressMoveLeft();
     return;
   }
   if (e.code === "ArrowRight") {
-    if (!keys.right) {
-      keys.right = true;
-      tryMove(state, 1, 0);
-      resetDas();
-    }
+    pressMoveRight();
     return;
   }
   if (e.code === "ArrowDown") {
-    keys.down = true;
+    pressSoftDrop();
     return;
   }
   if (e.code === "ArrowUp") {
-    tryRotate(state, 1);
+    actionRotate();
     return;
   }
   if (e.code === "Space") {
-    const lr = hardDrop(state);
-    triggerLineFx(lr);
+    actionHardDrop();
     return;
   }
 }
 
 function onKeyUp(e) {
-  if (e.code === "ArrowLeft") keys.left = false;
-  if (e.code === "ArrowRight") keys.right = false;
-  if (e.code === "ArrowDown") keys.down = false;
+  if (e.code === "ArrowLeft") releaseMoveLeft();
+  if (e.code === "ArrowRight") releaseMoveRight();
+  if (e.code === "ArrowDown") releaseSoftDrop();
+}
+
+function bindTouchControls() {
+  const root = document.querySelector(".touch-controls");
+  if (!root) return;
+
+  root.addEventListener("contextmenu", (e) => e.preventDefault());
+
+  const holdActions = new Set(["left", "right", "soft-drop"]);
+
+  /** @param {PointerEvent} e */
+  function onPointerDown(e) {
+    const btn = e.target.closest("[data-action]");
+    if (!btn || !root.contains(btn)) return;
+    if (e.button !== 0) return;
+    e.preventDefault();
+    btn.setPointerCapture(e.pointerId);
+
+    const action = btn.getAttribute("data-action");
+    if (!action) return;
+
+    if (holdActions.has(action)) {
+      if (action === "left") pressMoveLeft();
+      else if (action === "right") pressMoveRight();
+      else if (action === "soft-drop") pressSoftDrop();
+    } else if (action === "rotate") {
+      actionRotate();
+    } else if (action === "hard-drop") {
+      actionHardDrop();
+    } else if (action === "pause") {
+      togglePause();
+    }
+  }
+
+  /** @param {PointerEvent} e */
+  function onPointerUp(e) {
+    const btn = e.target.closest("[data-action]");
+    if (!btn || !root.contains(btn)) return;
+    const action = btn.getAttribute("data-action");
+    if (!action) return;
+
+    if (action === "left") releaseMoveLeft();
+    else if (action === "right") releaseMoveRight();
+    else if (action === "soft-drop") releaseSoftDrop();
+  }
+
+  root.addEventListener("pointerdown", onPointerDown);
+  root.addEventListener("pointerup", onPointerUp);
+  root.addEventListener("pointercancel", onPointerUp);
+  root.addEventListener("pointerleave", (e) => {
+    const btn = e.target.closest("[data-action]");
+    if (!btn || !root.contains(btn)) return;
+    const action = btn.getAttribute("data-action");
+    if (action === "left") releaseMoveLeft();
+    else if (action === "right") releaseMoveRight();
+    else if (action === "soft-drop") releaseSoftDrop();
+  });
 }
 
 btnStart.addEventListener("click", () => {
@@ -236,6 +333,8 @@ btnRestart.addEventListener("click", () => {
 
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);
+
+bindTouchControls();
 
 syncHud();
 drawNext(nextCtx, state.nextType, NEXT_CELL);
