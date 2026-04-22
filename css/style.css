@@ -407,45 +407,45 @@ body {
     background: rgba(25, 30, 55, 0.85);
   }
 
-  /* 좌측 버튼 */
+  /* 좌측 버튼 - 게임 하단부 */
   .btn-left {
-    left: 2%;
-    top: 25%;
-    transform: translateY(-50%);
+    left: 5%;
+    bottom: 18%;
+    transform: none;
   }
 
   .btn-soft-drop {
-    left: 2%;
-    top: 50%;
-    transform: translateY(-50%);
+    left: 5%;
+    bottom: 10%;
+    transform: none;
   }
 
   .btn-hard-drop {
-    left: 2%;
-    top: 75%;
-    transform: translateY(-50%);
+    left: 5%;
+    bottom: 2%;
+    transform: none;
     width: 4rem;
     height: 4rem;
     font-size: 1.6rem;
   }
 
-  /* 우측 버튼 */
+  /* 우측 버튼 - 게임 하단부 */
   .btn-right {
-    right: 2%;
-    top: 25%;
-    transform: translateY(-50%);
+    right: 5%;
+    bottom: 18%;
+    transform: none;
   }
 
   .btn-rotate {
-    right: 2%;
-    top: 50%;
-    transform: translateY(-50%);
+    right: 5%;
+    bottom: 10%;
+    transform: none;
   }
 
   .btn-pause {
-    right: 2%;
-    top: 75%;
-    transform: translateY(-50%);
+    right: 5%;
+    bottom: 2%;
+    transform: none;
   }
 
   /* 시작 버튼 */
