@@ -188,6 +188,7 @@ body {
   .board-wrap {
     flex: 0 0 auto;
     order: 1;
+    background: linear-gradient(135deg, rgba(0, 245, 255, 0.25), rgba(179, 102, 255, 0.2));
   }
 
   .panel {
@@ -207,6 +208,19 @@ body {
   }
 
   .pause-hint-mobile {
+    display: none !important;
+  }
+
+  /* PC: 모바일 오버레이 숨김 */
+  .game-overlay {
+    display: none !important;
+  }
+
+  .mobile-controls {
+    display: none !important;
+  }
+
+  .btn-start-overlay {
     display: none !important;
   }
 }
