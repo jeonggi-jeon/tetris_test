@@ -250,7 +250,8 @@ body {
 
   html,
   body {
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     margin: 0;
     padding: 0;
@@ -261,20 +262,35 @@ body {
     inset: 0;
     padding: 0;
     max-width: 100%;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    background: var(--bg-deep);
   }
 
   .header {
+    flex: 0 0 auto;
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 245, 255, 0.2);
+    z-index: 5;
+  }
+
+  .header .title {
+    font-size: 1.2rem;
+    margin: 0 0 0.5rem;
+  }
+
+  .header .subtitle {
     display: none;
   }
 
   .main {
     flex: 1;
     width: 100%;
-    height: 100%;
+    min-height: 0;
     padding: 0;
     margin: 0;
     display: flex;
@@ -333,20 +349,21 @@ body {
   /* 점수/레벨/라인 한 줄 표시 */
   .info-stats {
     position: absolute;
-    top: 2%;
+    top: 3%;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 1.5rem;
-    background: rgba(15, 18, 35, 0.6);
+    gap: 1.2rem;
+    background: rgba(15, 18, 35, 0.65);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1.5px solid rgba(255, 50, 100, 0.5);
+    border: 1.5px solid #ff4466;
     border-radius: 8px;
     padding: 0.6rem 1rem;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--text);
     white-space: nowrap;
+    z-index: 15;
   }
 
   .stat-item {
@@ -366,10 +383,11 @@ body {
     background: rgba(20, 24, 45, 0.65);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1.5px solid rgba(255, 50, 100, 0.4);
+    border: 1.5px solid #ff4466;
     border-radius: 8px;
     padding: 0.5rem;
     font-size: 0.7rem;
+    z-index: 15;
   }
 
   .info-card .card-title {
@@ -389,14 +407,14 @@ body {
   }
 
   .info-next {
-    top: 2%;
+    top: 2.5%;
     right: 2%;
     padding: 0.5rem;
   }
 
   .info-next canvas {
-    width: 70px;
-    height: 70px;
+    width: 65px;
+    height: 65px;
     display: block;
     margin: 0.25rem auto 0;
     border-radius: 5px;
@@ -414,8 +432,8 @@ body {
   .touch-btn {
     position: absolute;
     pointer-events: auto;
-    width: 3.2rem;
-    height: 3.2rem;
+    width: 3rem;
+    height: 3rem;
     padding: 0;
     display: flex;
     align-items: center;
@@ -424,66 +442,73 @@ body {
     font-size: 1.3rem;
     touch-action: manipulation;
     border: 2px solid #ff4466;
-    background: rgba(15, 18, 35, 0.5);
-    box-shadow: 0 3px 10px rgba(255, 68, 102, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    background: rgba(15, 18, 35, 0.6);
+    box-shadow: 0 3px 10px rgba(255, 68, 102, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.04);
     color: #ff4466;
     font-family: Orbitron, sans-serif;
     font-weight: 700;
     cursor: pointer;
     transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+    z-index: 20;
   }
 
   .touch-btn:active {
-    transform: scale(0.92);
-    background: rgba(25, 30, 55, 0.7);
-    box-shadow: 0 2px 6px rgba(255, 68, 102, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transform: scale(0.90);
+    background: rgba(25, 30, 55, 0.75);
+    box-shadow: 0 2px 6px rgba(255, 68, 102, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
   /* 버튼 위치: 좌우 세로 배치 */
   /* 좌측 버튼 */
   .btn-left {
-    left: 2%;
-    top: 25%;
+    left: 1%;
+    top: 28%;
+    transform: translateY(-50%);
   }
 
   .btn-soft-drop {
-    left: 2%;
+    left: 1%;
     top: 50%;
     transform: translateY(-50%);
   }
 
   .btn-hard-drop {
-    left: 2%;
-    bottom: 15%;
-    width: 3.5rem;
-    height: 3.5rem;
+    left: 1%;
+    top: 72%;
+    transform: translateY(-50%);
+    width: 3.3rem;
+    height: 3.3rem;
     font-size: 1.4rem;
   }
 
   /* 우측 버튼 */
   .btn-right {
-    right: 2%;
-    top: 25%;
+    right: 1%;
+    top: 28%;
+    transform: translateY(-50%);
   }
 
   .btn-rotate {
-    right: 2%;
+    right: 1%;
     top: 50%;
     transform: translateY(-50%);
   }
 
   .btn-pause {
-    right: 2%;
-    bottom: 15%;
+    right: 1%;
+    top: 72%;
+    transform: translateY(-50%);
   }
 
   /* 헤더의 게임 시작 버튼 (모바일) */
   .btn-start-header {
     display: none;
-    margin-top: 0.75rem;
-    padding: 0.75rem 2rem;
-    font-size: 0.9rem;
-    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.65rem 1.5rem;
+    font-size: 0.85rem;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
     box-shadow: 0 4px 20px rgba(0, 245, 255, 0.3);
   }
 
