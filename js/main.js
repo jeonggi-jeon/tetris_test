@@ -78,7 +78,8 @@ function calculateCellSize() {
 
   const bw = COLS * CELL;
   const bh = VISIBLE_ROWS * CELL;
-  mobileBoardOffsetX = (availW - bw) / 2;
+  /* 뷰포트 전체 너비(vw) 기준 가로 중앙 — innerW 는 CELL만 제한, 오프셋은 vw 사용 */
+  mobileBoardOffsetX = (vw - bw) / 2;
   mobileBoardOffsetY =
     MOBILE_TOP_RESERVED_PX + Math.max(0, (availH - bh) / 2);
 }
