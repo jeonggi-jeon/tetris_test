@@ -15,10 +15,23 @@ import {
   resetParticles,
 } from "./render.js";
 
-const CELL = 32;
-const NEXT_CELL = 24;
+// 모바일: 화면에 맞게 CELL 크기 계산
+let CELL = 32;
+let NEXT_CELL = 24;
 const DAS_DELAY_MS = 170;
 const DAS_INTERVAL_MS = 50;
+
+function calculateCellSize() {
+  const isMobile = window.innerWidth <= 900;
+  if (isMobile) {
+    // 모바일: 게임 높이를 화면 높이에 맞춤
+    CELL = Math.floor(window.innerHeight / VISIBLE_ROWS);
+    NEXT_CELL = Math.floor(CELL * 0.75);
+  }
+}
+
+// CELL 크기 초기 계산
+calculateCellSize();
 
 const gameCanvas = /** @type {HTMLCanvasElement} */ (
   document.getElementById("gameCanvas")
@@ -60,10 +73,16 @@ const nextCtxMobile = setupHiDpiCanvas(nextCanvasMobile, nextCanvasMobile.width,
 
 function setupHiDpiCanvas(canvas, cssW, cssH) {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  canvas.style.width = `${cssW}px`;
-  canvas.style.height = `${cssH}px`;
-  canvas.width = Math.floor(cssW * dpr);
-  canvas.height = Math.floor(cssH * dpr);
+
+  // 모바일: 전체 화면 크기 사용
+  const isMobile = window.innerWidth <= 900;
+  const w = isMobile ? window.innerWidth : cssW;
+  const h = isMobile ? window.innerHeight : cssH;
+
+  canvas.style.width = `${w}px`;
+  canvas.style.height = `${h}px`;
+  canvas.width = Math.floor(w * dpr);
+  canvas.height = Math.floor(h * dpr);
   const c = canvas.getContext("2d");
   if (!c) throw new Error("2d context unavailable");
   c.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -124,7 +143,11 @@ function loop(ts) {
   const ghostY = computeGhostY(state);
   drawMain(ctx, state, ghostY, CELL, dt, reducedMotion);
   drawNext(nextCtx, state.nextType, NEXT_CELL);
-  drawNext(nextCtxMobile, state.nextType, 30);
+
+  // 모바일: NEXT_CELL 사용
+  const isMobile = window.innerWidth <= 900;
+  const nextCellMobile = isMobile ? NEXT_CELL : 30;
+  drawNext(nextCtxMobile, state.nextType, nextCellMobile);
   syncHud();
 
   if (state.gameOver && playing) {
@@ -348,5 +371,7 @@ bindTouchControls();
 
 syncHud();
 drawNext(nextCtx, state.nextType, NEXT_CELL);
-drawNext(nextCtxMobile, state.nextType, 30);
+const isMobileInit = window.innerWidth <= 900;
+const nextCellMobileInit = isMobileInit ? NEXT_CELL : 30;
+drawNext(nextCtxMobile, state.nextType, nextCellMobileInit);
 requestAnimationFrame(loop);

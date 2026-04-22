@@ -177,7 +177,9 @@ export function drawMain(
   dt,
   reducedMotion,
 ) {
-  const canvasHeight = VISIBLE_ROWS * cellSize;
+  // 모바일: 실제 canvas 높이 사용, PC: 게임 격자 높이 사용
+  const isMobile = window.innerWidth <= 900;
+  const canvasHeight = isMobile ? ctx.canvas.height : VISIBLE_ROWS * cellSize;
   drawBoardLayer(ctx, gameState.board, cellSize, canvasHeight);
 
   const cur = gameState.current;
