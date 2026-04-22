@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /d D:\\\\workspace\\\\tetris_test)",
+      "Bash(npx --yes serve . --listen 8080)"
+    ]
+  }
+}

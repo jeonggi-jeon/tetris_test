@@ -24,8 +24,47 @@
         <div class="board-wrap" id="boardWrap">
           <canvas id="gameCanvas" width="320" height="640" aria-label="게임 보드"></canvas>
           <div class="flash-overlay" id="flashOverlay" aria-hidden="true"></div>
+
+          <!-- 모바일 오버레이: 게임 위의 정보 -->
+          <div class="game-overlay">
+            <!-- 좌상단: 점수 -->
+            <div class="info-card info-score">
+              <div class="card-title">점수</div>
+              <div class="stat value" id="scoreMobile">0</div>
+            </div>
+
+            <!-- 우상단: 레벨 + 라인 -->
+            <div class="info-card info-level">
+              <div class="card-title">레벨</div>
+              <div class="stat value" id="levelMobile">1</div>
+            </div>
+            <div class="info-card info-lines">
+              <div class="card-title">라인</div>
+              <div class="stat value" id="linesMobile">0</div>
+            </div>
+
+            <!-- 우하단: 다음 조각 -->
+            <div class="info-card info-next">
+              <div class="card-title">다음</div>
+              <canvas id="nextCanvasMobile" width="100" height="100" aria-label="다음 조각"></canvas>
+            </div>
+          </div>
+
+          <!-- 모바일 터치 컨트롤 (게임 위) -->
+          <div class="mobile-controls" aria-label="터치 조작 패널">
+            <button type="button" class="touch-btn btn-pause" data-action="pause" aria-label="일시정지">Ⅱ</button>
+            <button type="button" class="touch-btn btn-rotate" data-action="rotate" aria-label="회전">↻</button>
+            <button type="button" class="touch-btn btn-left" data-action="left" aria-label="왼쪽">←</button>
+            <button type="button" class="touch-btn btn-soft-drop" data-action="soft-drop" aria-label="소프트 드롭">↓</button>
+            <button type="button" class="touch-btn btn-right" data-action="right" aria-label="오른쪽">→</button>
+            <button type="button" class="touch-btn btn-hard-drop" data-action="hard-drop" aria-label="하드 드롭">⤓</button>
+          </div>
+
+          <!-- 시작 버튼 (게임 위) -->
+          <button type="button" class="btn-primary btn-start-overlay" id="btnStart">게임 시작</button>
         </div>
 
+        <!-- PC 사이드 패널 -->
         <aside class="panel">
           <section class="glass card">
             <h2 class="card-title">점수</h2>
@@ -54,17 +93,6 @@
           <button type="button" class="btn-primary" id="btnStart">게임 시작</button>
         </aside>
       </div>
-
-      <aside class="touch-controls" aria-label="터치 조작 패널">
-        <button type="button" class="touch-btn" data-action="rotate" aria-label="회전">↻</button>
-        <div class="touch-row touch-row--lr">
-          <button type="button" class="touch-btn touch-btn--wide" data-action="left" aria-label="왼쪽">←</button>
-          <button type="button" class="touch-btn touch-btn--wide" data-action="right" aria-label="오른쪽">→</button>
-        </div>
-        <button type="button" class="touch-btn" data-action="soft-drop" aria-label="소프트 드롭">↓</button>
-        <button type="button" class="touch-btn touch-btn--accent" data-action="hard-drop" aria-label="하드 드롭">⤓</button>
-        <button type="button" class="touch-btn" data-action="pause" aria-label="일시정지">Ⅱ</button>
-      </aside>
     </main>
 
     <div class="overlay" id="pauseOverlay" hidden>

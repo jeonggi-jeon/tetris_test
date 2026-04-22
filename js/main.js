@@ -26,6 +26,9 @@ const gameCanvas = /** @type {HTMLCanvasElement} */ (
 const nextCanvas = /** @type {HTMLCanvasElement} */ (
   document.getElementById("nextCanvas")
 );
+const nextCanvasMobile = /** @type {HTMLCanvasElement} */ (
+  document.getElementById("nextCanvasMobile")
+);
 const boardWrap = document.getElementById("boardWrap");
 const flashOverlay = document.getElementById("flashOverlay");
 const pauseOverlay = document.getElementById("pauseOverlay");
@@ -33,6 +36,9 @@ const gameOverOverlay = document.getElementById("gameOverOverlay");
 const scoreEl = document.getElementById("score");
 const levelEl = document.getElementById("level");
 const linesEl = document.getElementById("lines");
+const scoreMobileEl = document.getElementById("scoreMobile");
+const levelMobileEl = document.getElementById("levelMobile");
+const linesMobileEl = document.getElementById("linesMobile");
 const finalScoreEl = document.getElementById("finalScore");
 const btnStart = document.getElementById("btnStart");
 const btnRestart = document.getElementById("btnRestart");
@@ -49,6 +55,7 @@ motionMq.addEventListener("change", (e) => {
 
 const ctx = setupHiDpiCanvas(gameCanvas, COLS * CELL, VISIBLE_ROWS * CELL);
 const nextCtx = setupHiDpiCanvas(nextCanvas, nextCanvas.width, nextCanvas.height);
+const nextCtxMobile = setupHiDpiCanvas(nextCanvasMobile, nextCanvasMobile.width, nextCanvasMobile.height);
 
 function setupHiDpiCanvas(canvas, cssW, cssH) {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -78,6 +85,9 @@ function syncHud() {
   scoreEl.textContent = String(state.score);
   levelEl.textContent = String(state.level);
   linesEl.textContent = String(state.lines);
+  if (scoreMobileEl) scoreMobileEl.textContent = String(state.score);
+  if (levelMobileEl) levelMobileEl.textContent = String(state.level);
+  if (linesMobileEl) linesMobileEl.textContent = String(state.lines);
 }
 
 function triggerLineFx(lineResult) {
@@ -113,6 +123,7 @@ function loop(ts) {
   const ghostY = computeGhostY(state);
   drawMain(ctx, state, ghostY, CELL, dt, reducedMotion);
   drawNext(nextCtx, state.nextType, NEXT_CELL);
+  drawNext(nextCtxMobile, state.nextType, 30);
   syncHud();
 
   if (state.gameOver && playing) {
@@ -255,7 +266,10 @@ function onKeyUp(e) {
 }
 
 function bindTouchControls() {
-  const root = document.querySelector(".touch-controls");
+  const mobileRoot = document.querySelector(".mobile-controls");
+  const desktopRoot = document.querySelector(".touch-controls");
+  const root = mobileRoot || desktopRoot;
+
   if (!root) return;
 
   root.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -311,7 +325,7 @@ function bindTouchControls() {
   });
 }
 
-btnStart.addEventListener("click", () => {
+function startGameSession() {
   resetParticles();
   startGame(state);
   playing = true;
@@ -319,17 +333,12 @@ btnStart.addEventListener("click", () => {
   pauseOverlay.hidden = true;
   gameOverOverlay.hidden = true;
   syncHud();
-});
+  document.body.classList.add("game-started");
+}
 
-btnRestart.addEventListener("click", () => {
-  resetParticles();
-  startGame(state);
-  playing = true;
-  paused = false;
-  pauseOverlay.hidden = true;
-  gameOverOverlay.hidden = true;
-  syncHud();
-});
+btnStart.addEventListener("click", startGameSession);
+
+btnRestart.addEventListener("click", startGameSession);
 
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);
@@ -338,4 +347,5 @@ bindTouchControls();
 
 syncHud();
 drawNext(nextCtx, state.nextType, NEXT_CELL);
+drawNext(nextCtxMobile, state.nextType, 30);
 requestAnimationFrame(loop);
