@@ -388,7 +388,7 @@ body {
     font-weight: 700;
   }
 
-  /* 다음 조각 — 우측 상단(모서리에 붙이지 않고 안쪽으로 여백) */
+  /* 다음 조각 — 우측 상단, 뒤(게임 화면)이 비치도록 100% 투명 */
   .info-next {
     position: fixed;
     top: calc(0.35rem + env(safe-area-inset-top, 0px));
@@ -403,14 +403,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow: visible;
     contain: layout style paint;
-    background: rgba(10, 12, 22, 0.88);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: transparent;
     border: none;
     border-radius: 5px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+    box-shadow: none;
     z-index: 15;
     pointer-events: none;
   }
@@ -424,7 +422,7 @@ body {
     margin: 0;
     padding: 0;
     border-radius: 4px;
-    background: rgba(6, 8, 18, 0.95);
+    background: transparent;
     vertical-align: top;
   }
 

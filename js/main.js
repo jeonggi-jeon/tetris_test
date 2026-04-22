@@ -252,7 +252,7 @@ function loop(ts) {
 
   const isMobile = isMobileViewport();
   const nextCellMobile = isMobile ? NEXT_CELL : 30;
-  drawNext(nextCtxMobile, state.nextType, nextCellMobile);
+  drawNext(nextCtxMobile, state.nextType, nextCellMobile, true);
   syncHud();
 
   if (state.gameOver && playing) {
@@ -507,5 +507,5 @@ if (window.visualViewport) {
 syncHud();
 drawNext(nextCtx, state.nextType, NEXT_CELL);
 const nextCellMobileInit = isMobileViewport() ? NEXT_CELL : 30;
-drawNext(nextCtxMobile, state.nextType, nextCellMobileInit);
+drawNext(nextCtxMobile, state.nextType, nextCellMobileInit, true);
 requestAnimationFrame(loop);

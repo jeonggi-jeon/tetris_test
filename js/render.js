@@ -215,11 +215,16 @@ export function drawMain(
   }
 }
 
-export function drawNext(ctx, nextType, cellSize) {
+/**
+ * @param {boolean} [transparentBackground] true면 배경을 칠하지 않아 뒤가 보임(모바일 미리보기)
+ */
+export function drawNext(ctx, nextType, cellSize, transparentBackground = false) {
   const canvas = ctx.canvas;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "rgba(8,10,22,0.92)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  if (!transparentBackground) {
+    ctx.fillStyle = "rgba(8,10,22,0.92)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
 
   if (!nextType) return;
 
