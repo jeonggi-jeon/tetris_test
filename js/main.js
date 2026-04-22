@@ -223,6 +223,14 @@ function triggerLineFx(lineResult) {
 }
 
 function loop(ts) {
+  if (!ctx) {
+    refreshGameCanvasContext();
+  }
+  if (!ctx) {
+    requestAnimationFrame(loop);
+    return;
+  }
+
   const dt = lastTs ? Math.min(48, ts - lastTs) : 16;
   lastTs = ts;
 
@@ -446,7 +454,12 @@ function bindTouchControls() {
   });
 }
 
+let lastStartSessionAt = 0;
 function startGameSession() {
+  const now = performance.now();
+  if (now - lastStartSessionAt < 500) return;
+  lastStartSessionAt = now;
+
   resetParticles();
   startGame(state);
   playing = true;
@@ -457,9 +470,17 @@ function startGameSession() {
   document.body.classList.add("game-started");
 }
 
-if (btnStartMobile) btnStartMobile.addEventListener("click", startGameSession);
 if (btnStartPC) btnStartPC.addEventListener("click", startGameSession);
 if (btnRestart) btnRestart.addEventListener("click", startGameSession);
+
+if (btnStartMobile) {
+  /** click + touch 대응 (WebKit에서 둘 다 쓸 수 있어 중복 방지는 startGameSession 내부 쿨다운) */
+  btnStartMobile.addEventListener("click", startGameSession);
+  btnStartMobile.addEventListener("touchend", (e) => {
+    e.preventDefault();
+    startGameSession();
+  }, { passive: false });
+}
 
 if (btnPauseResume) {
   btnPauseResume.addEventListener("click", () => {

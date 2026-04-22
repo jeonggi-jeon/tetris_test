@@ -372,6 +372,8 @@ body {
     white-space: nowrap;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
     z-index: 15;
+    /* HUD는 터치 불필요 — ‘게임 시작’ 터치를 가로채지 않게 */
+    pointer-events: none;
   }
 
   .stat-item {
@@ -518,13 +520,13 @@ body {
     transform: translateY(-50%);
   }
 
-  /* 시작 버튼 — 캔버스·오버레이보다 위에서 터치 수신 */
+  /* 시작 버튼 — .mobile-game-container 밖, overflow·클리핑 영향 제거, 최상위 터치 */
   .btn-mobile-start {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 110;
+    z-index: 200;
     padding: 1rem 2rem;
     font-size: 1rem;
     width: auto;
@@ -539,8 +541,7 @@ body {
     display: none;
   }
 
-  /* 다음 미리보기는 클릭 불필요 — 터치가 보드로 통과하지 않도록 제외 */
-  body.game-started .info-stats,
+  /* 게임 시작 후에만 터치 조작 버튼 활성 */
   body.game-started .touch-btn {
     pointer-events: auto;
   }
