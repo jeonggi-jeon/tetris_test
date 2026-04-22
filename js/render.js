@@ -169,6 +169,13 @@ function drawPieceAt(ctx, type, rotation, ox, oy, cellSize, canvasHeight, opts) 
   }
 }
 
+/**
+ * @typedef {{ x: number, y: number }} MobileBoardOffset
+ */
+
+/**
+ * @param {MobileBoardOffset | null} mobileBoardOffset 모바일에서 보드를 가운데 그릴 때 평행이동(px)
+ */
 export function drawMain(
   ctx,
   gameState,
@@ -176,10 +183,20 @@ export function drawMain(
   cellSize,
   dt,
   reducedMotion,
+  mobileBoardOffset = null,
 ) {
-  // 모바일: 실제 canvas 높이 사용, PC: 게임 격자 높이 사용
   const isMobile = window.innerWidth <= 900;
-  const canvasHeight = isMobile ? ctx.canvas.height : VISIBLE_ROWS * cellSize;
+  const logicalBoardH = VISIBLE_ROWS * cellSize;
+
+  if (isMobile && mobileBoardOffset) {
+    const cw = ctx.canvas.clientWidth;
+    const ch = ctx.canvas.clientHeight;
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.save();
+    ctx.translate(mobileBoardOffset.x, mobileBoardOffset.y);
+  }
+
+  const canvasHeight = logicalBoardH;
   drawBoardLayer(ctx, gameState.board, cellSize, canvasHeight);
 
   const cur = gameState.current;
@@ -192,6 +209,10 @@ export function drawMain(
 
   updateParticles(reducedMotion ? 0 : dt);
   drawParticles(ctx, reducedMotion);
+
+  if (isMobile && mobileBoardOffset) {
+    ctx.restore();
+  }
 }
 
 export function drawNext(ctx, nextType, cellSize) {

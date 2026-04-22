@@ -15,26 +15,79 @@ import {
   resetParticles,
 } from "./render.js";
 
-// 모바일: 화면에 맞게 CELL 크기 계산
+// 모바일: 화면에 맞게 CELL 크기 계산 (상단 HUD·하단 버튼 영역 제외, 가로/세로 균형)
 let CELL = 32;
 let NEXT_CELL = 24;
+/** 상단 정보 영역 예상 높이(px) — css/style.css 의 .info-stats 와 대략 일치 */
+const MOBILE_TOP_RESERVED_PX = 92;
+/** 하단 터치 그리드·안전 영역 예상 높이(px) */
+const MOBILE_BOTTOM_RESERVED_PX = 182;
+
+/** @type {number} */
+let mobileBoardOffsetX = 0;
+/** @type {number} */
+let mobileBoardOffsetY = 0;
+
 const DAS_DELAY_MS = 170;
 const DAS_INTERVAL_MS = 50;
 
-function calculateCellSize() {
-  const isMobile = window.innerWidth <= 900;
-  if (isMobile) {
-    // 모바일: 게임 높이를 화면 높이에 맞춤
-    CELL = Math.floor(window.innerHeight / VISIBLE_ROWS);
-    NEXT_CELL = Math.floor(CELL * 0.75);
-  }
+function isMobileViewport() {
+  return window.innerWidth <= 900;
 }
 
-// CELL 크기 초기 계산
+function getMobileViewportSize() {
+  const vv = window.visualViewport;
+  if (vv) {
+    return {
+      width: Math.max(1, vv.width),
+      height: Math.max(1, vv.height),
+    };
+  }
+  return {
+    width: Math.max(1, window.innerWidth),
+    height: Math.max(1, window.innerHeight),
+  };
+}
+
+function calculateCellSize() {
+  if (!isMobileViewport()) {
+    CELL = 32;
+    NEXT_CELL = 24;
+    mobileBoardOffsetX = 0;
+    mobileBoardOffsetY = 0;
+    return;
+  }
+
+  const { width: vw, height: vh } = getMobileViewportSize();
+  const availW = vw;
+  const availH = Math.max(
+    120,
+    vh - MOBILE_TOP_RESERVED_PX - MOBILE_BOTTOM_RESERVED_PX,
+  );
+
+  CELL = Math.max(
+    12,
+    Math.min(
+      Math.floor(availW / COLS),
+      Math.floor(availH / VISIBLE_ROWS),
+    ),
+  );
+  NEXT_CELL = Math.max(12, Math.floor(CELL * 0.75));
+
+  const bw = COLS * CELL;
+  const bh = VISIBLE_ROWS * CELL;
+  mobileBoardOffsetX = (availW - bw) / 2;
+  mobileBoardOffsetY =
+    MOBILE_TOP_RESERVED_PX + Math.max(0, (availH - bh) / 2);
+}
+
 calculateCellSize();
 
-const gameCanvas = /** @type {HTMLCanvasElement} */ (
-  document.getElementById("gameCanvas")
+const gameCanvasMobile = /** @type {HTMLCanvasElement | null} */ (
+  document.getElementById("gameCanvasMobile")
+);
+const gameCanvasPC = /** @type {HTMLCanvasElement | null} */ (
+  document.getElementById("gameCanvasPC")
 );
 const nextCanvas = /** @type {HTMLCanvasElement} */ (
   document.getElementById("nextCanvas")
@@ -43,7 +96,9 @@ const nextCanvasMobile = /** @type {HTMLCanvasElement} */ (
   document.getElementById("nextCanvasMobile")
 );
 const boardWrap = document.getElementById("boardWrap");
-const flashOverlay = document.getElementById("flashOverlay");
+const flashOverlayMobile = document.getElementById("flashOverlayMobile");
+const flashOverlayPC = document.getElementById("flashOverlayPC");
+const mobileBoardShake = document.querySelector(".mobile-game-container");
 const pauseOverlay = document.getElementById("pauseOverlay");
 const gameOverOverlay = document.getElementById("gameOverOverlay");
 const scoreEl = document.getElementById("score");
@@ -67,17 +122,27 @@ motionMq.addEventListener("change", (e) => {
   if (reducedMotion) resetParticles();
 });
 
-const ctx = setupHiDpiCanvas(gameCanvas, COLS * CELL, VISIBLE_ROWS * CELL);
-const nextCtx = setupHiDpiCanvas(nextCanvas, nextCanvas.width, nextCanvas.height);
-const nextCtxMobile = setupHiDpiCanvas(nextCanvasMobile, nextCanvasMobile.width, nextCanvasMobile.height);
+/** @type {CanvasRenderingContext2D} */
+let ctx;
 
-function setupHiDpiCanvas(canvas, cssW, cssH) {
+const nextCtx = setupHiDpiCanvas(nextCanvas, nextCanvas.width, nextCanvas.height, false);
+const nextCtxMobile = setupHiDpiCanvas(
+  nextCanvasMobile,
+  nextCanvasMobile.width,
+  nextCanvasMobile.height,
+  false,
+);
+
+/**
+ * @param {boolean} [fullViewportOnMobile] 메인 게임 보드만 true — 미리보기 캔버스는 false
+ */
+function setupHiDpiCanvas(canvas, cssW, cssH, fullViewportOnMobile = false) {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-  // 모바일: 전체 화면 크기 사용
-  const isMobile = window.innerWidth <= 900;
-  const w = isMobile ? window.innerWidth : cssW;
-  const h = isMobile ? window.innerHeight : cssH;
+  const useVv = fullViewportOnMobile && isMobileViewport();
+  const vs = useVv ? getMobileViewportSize() : null;
+  const w = useVv && vs ? Math.floor(vs.width) : cssW;
+  const h = useVv && vs ? Math.floor(vs.height) : cssH;
 
   canvas.style.width = `${w}px`;
   canvas.style.height = `${h}px`;
@@ -87,6 +152,31 @@ function setupHiDpiCanvas(canvas, cssW, cssH) {
   if (!c) throw new Error("2d context unavailable");
   c.setTransform(dpr, 0, 0, dpr, 0, 0);
   return c;
+}
+
+function refreshGameCanvasContext() {
+  const mobile = isMobileViewport();
+  const canvas = mobile ? gameCanvasMobile : gameCanvasPC;
+  if (!canvas) return;
+  const vs = getMobileViewportSize();
+  const cssW = mobile ? vs.width : COLS * CELL;
+  const cssH = mobile ? vs.height : VISIBLE_ROWS * CELL;
+  ctx = setupHiDpiCanvas(canvas, cssW, cssH, true);
+}
+
+refreshGameCanvasContext();
+
+function getActiveFlashOverlay() {
+  return isMobileViewport() ? flashOverlayMobile : flashOverlayPC;
+}
+
+function triggerShake() {
+  const target = isMobileViewport() ? mobileBoardShake : boardWrap;
+  if (!target) return;
+  target.classList.remove("shake");
+  void target.offsetWidth;
+  target.classList.add("shake");
+  setTimeout(() => target.classList.remove("shake"), 400);
 }
 
 const state = createGameState();
@@ -102,9 +192,9 @@ const keys = { left: false, right: false, down: false };
 const das = { timer: 0, armed: false };
 
 function syncHud() {
-  scoreEl.textContent = String(state.score);
-  levelEl.textContent = String(state.level);
-  linesEl.textContent = String(state.lines);
+  if (scoreEl) scoreEl.textContent = String(state.score);
+  if (levelEl) levelEl.textContent = String(state.level);
+  if (linesEl) linesEl.textContent = String(state.lines);
   if (scoreMobileEl) scoreMobileEl.textContent = String(state.score);
   if (levelMobileEl) levelMobileEl.textContent = String(state.level);
   if (linesMobileEl) linesMobileEl.textContent = String(state.lines);
@@ -114,16 +204,16 @@ function triggerLineFx(lineResult) {
   if (!lineResult || lineResult.cleared === 0) return;
   const w = COLS * CELL;
   spawnLineClearBurst(lineResult.rows, CELL, w, reducedMotion);
+  const flashEl = getActiveFlashOverlay();
   if (!reducedMotion) {
-    flashOverlay.classList.remove("active");
-    void flashOverlay.offsetWidth;
-    flashOverlay.classList.add("active");
-    setTimeout(() => flashOverlay.classList.remove("active"), 380);
+    if (flashEl) {
+      flashEl.classList.remove("active");
+      void flashEl.offsetWidth;
+      flashEl.classList.add("active");
+      setTimeout(() => flashEl.classList.remove("active"), 380);
+    }
     if (lineResult.cleared >= 4) {
-      boardWrap.classList.remove("shake");
-      void boardWrap.offsetWidth;
-      boardWrap.classList.add("shake");
-      setTimeout(() => boardWrap.classList.remove("shake"), 400);
+      triggerShake();
     }
   }
 }
@@ -141,11 +231,14 @@ function loop(ts) {
   }
 
   const ghostY = computeGhostY(state);
-  drawMain(ctx, state, ghostY, CELL, dt, reducedMotion);
+  const mobileOffset =
+    isMobileViewport()
+      ? { x: mobileBoardOffsetX, y: mobileBoardOffsetY }
+      : null;
+  drawMain(ctx, state, ghostY, CELL, dt, reducedMotion, mobileOffset);
   drawNext(nextCtx, state.nextType, NEXT_CELL);
 
-  // 모바일: NEXT_CELL 사용
-  const isMobile = window.innerWidth <= 900;
+  const isMobile = isMobileViewport();
   const nextCellMobile = isMobile ? NEXT_CELL : 30;
   drawNext(nextCtxMobile, state.nextType, nextCellMobile);
   syncHud();
@@ -369,9 +462,19 @@ window.addEventListener("keyup", onKeyUp);
 
 bindTouchControls();
 
+function onViewportChange() {
+  calculateCellSize();
+  refreshGameCanvasContext();
+}
+
+window.addEventListener("resize", onViewportChange);
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", onViewportChange);
+  window.visualViewport.addEventListener("scroll", onViewportChange);
+}
+
 syncHud();
 drawNext(nextCtx, state.nextType, NEXT_CELL);
-const isMobileInit = window.innerWidth <= 900;
-const nextCellMobileInit = isMobileInit ? NEXT_CELL : 30;
+const nextCellMobileInit = isMobileViewport() ? NEXT_CELL : 30;
 drawNext(nextCtxMobile, state.nextType, nextCellMobileInit);
 requestAnimationFrame(loop);
