@@ -20,8 +20,8 @@ let CELL = 32;
 let NEXT_CELL = 24;
 /** 상단 정보 영역 예상 높이(px) — css/style.css 의 .info-stats 와 대략 일치 */
 const MOBILE_TOP_RESERVED_PX = 92;
-/** 하단 터치 그리드·안전 영역 예상 높이(px) */
-const MOBILE_BOTTOM_RESERVED_PX = 182;
+/** 하단 홈 인디케이터·여백 (터치 버튼은 화면 중앙에 있음) */
+const MOBILE_BOTTOM_RESERVED_PX = 40;
 
 /** @type {number} */
 let mobileBoardOffsetX = 0;

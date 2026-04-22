@@ -298,7 +298,7 @@ body {
     min-height: 100dvh;
   }
 
-  /* 게임 캔버스 */
+  /* 게임 캔버스 — 조작은 하단 버튼만 사용; 터치가 통과해야 시작 버튼·HUD가 동작함 */
   #gameCanvasMobile {
     position: absolute;
     inset: 0;
@@ -308,6 +308,8 @@ body {
     border-radius: 0;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
+    pointer-events: none;
+    z-index: 0;
   }
 
   .mobile-layout .flash-overlay {
@@ -340,7 +342,7 @@ body {
     z-index: 10;
   }
 
-  /* 점수/레벨/라인 */
+  /* 점수/레벨/라인 — 글래스 카드와 동일 계열 */
   .info-stats {
     position: fixed;
     top: calc(2% + env(safe-area-inset-top, 0px));
@@ -348,22 +350,23 @@ body {
     transform: translateX(-50%);
     display: flex;
     gap: 1.3rem;
-    background: rgba(15, 18, 35, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 2px solid #ff4466;
-    border-radius: 8px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
     padding: 0.65rem 1.1rem;
     font-size: 0.85rem;
-    color: var(--text);
+    color: var(--text-muted);
     white-space: nowrap;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
     z-index: 15;
   }
 
   .stat-item {
     font-family: Orbitron, monospace;
     font-weight: 600;
-    color: #ff6666;
+    color: var(--accent-cyan);
     letter-spacing: 0.05em;
   }
 
@@ -377,12 +380,13 @@ body {
     position: fixed;
     top: calc(2% + env(safe-area-inset-top, 0px));
     right: calc(2% + env(safe-area-inset-right, 0px));
-    background: rgba(20, 24, 45, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 2px solid #ff4466;
-    border-radius: 8px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
     padding: 0.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
     z-index: 15;
   }
 
@@ -391,8 +395,8 @@ body {
     margin: 0 0 0.1rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: #ff6666;
-    opacity: 0.9;
+    color: var(--accent-cyan);
+    opacity: 0.95;
     font-weight: 700;
   }
 
@@ -405,103 +409,110 @@ body {
     background: rgba(8, 10, 22, 0.85);
   }
 
-  /* 터치 버튼: 하단 고정 그리드 (보드 영역과 분리) */
+  /* 터치 버튼: 좌우 열을 화면 세로 중앙에 배치 (.touch-btn 기본 네온 스타일과 동일) */
   .mobile-controls {
     position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 20;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(3, minmax(2.85rem, auto));
-    gap: 0.4rem;
-    padding: 0.45rem min(4vw, 1rem)
-      calc(0.55rem + env(safe-area-inset-bottom, 0px));
-    box-sizing: border-box;
-    max-width: 100%;
+    inset: 0;
     pointer-events: none;
-    align-items: center;
-    justify-items: center;
+    z-index: 20;
   }
 
   .mobile-controls .touch-btn {
-    position: relative;
-    left: auto !important;
-    right: auto !important;
-    top: auto !important;
-    bottom: auto !important;
-    transform: none;
+    position: fixed;
     pointer-events: auto;
-    width: min(100%, 4.5rem);
-    height: 3.15rem;
+    width: 3.5rem;
+    height: 3.5rem;
     padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-    font-size: 1.35rem;
+    border-radius: 10px;
+    font-size: 1.1rem;
     touch-action: manipulation;
-    border: 2.5px solid #ff4466;
-    background: rgba(15, 18, 35, 0.82);
-    box-shadow: 0 4px 15px rgba(255, 68, 102, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    color: #ff4466;
+    border: 1px solid rgba(0, 245, 255, 0.45);
+    background: linear-gradient(165deg, rgba(30, 36, 70, 0.95), rgba(14, 18, 38, 0.98));
+    box-shadow:
+      0 4px 18px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    color: var(--text);
     font-family: Orbitron, sans-serif;
     font-weight: 700;
     cursor: pointer;
-    transition: transform 0.1s ease, background 0.1s ease;
+    transition: transform 0.1s ease;
     z-index: 25;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .mobile-controls .touch-btn:active {
-    transform: scale(0.92);
-    background: rgba(25, 30, 55, 0.9);
+    transform: translateY(-50%) scale(0.96);
   }
 
+  /* 하드 드롭 — 보조 강조색 (.touch-btn--accent 와 동일 계열) */
+  .mobile-controls .btn-hard-drop {
+    width: 4rem;
+    height: 4rem;
+    font-size: 1.25rem;
+    border-color: rgba(255, 136, 68, 0.65);
+    background: linear-gradient(165deg, rgba(80, 40, 30, 0.55), rgba(30, 18, 24, 0.98));
+  }
+
+  .mobile-controls .btn-hard-drop:active {
+    transform: translateY(-50%) scale(0.96);
+  }
+
+  /* 좌열 5% — 세로 중앙 기준 위 / 가운데 / 아래 */
   .btn-left {
-    grid-column: 1;
-    grid-row: 1;
+    left: 5%;
+    top: calc(50% - 4.25rem);
+    transform: translateY(-50%);
   }
 
   .btn-soft-drop {
-    grid-column: 1;
-    grid-row: 2;
+    left: 5%;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .btn-hard-drop {
-    grid-column: 1;
-    grid-row: 3;
-    width: min(100%, 4.75rem);
-    height: 3.35rem;
-    font-size: 1.45rem;
+    left: 5%;
+    top: calc(50% + 4.25rem);
+    transform: translateY(-50%);
   }
 
+  /* 우열 5% */
   .btn-right {
-    grid-column: 2;
-    grid-row: 1;
+    right: 5%;
+    top: calc(50% - 4.25rem);
+    transform: translateY(-50%);
   }
 
   .btn-rotate {
-    grid-column: 2;
-    grid-row: 2;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .btn-pause {
-    grid-column: 2;
-    grid-row: 3;
+    right: 5%;
+    top: calc(50% + 4.25rem);
+    transform: translateY(-50%);
   }
 
-  /* 시작 버튼 */
+  /* 시작 버튼 — 캔버스·오버레이보다 위에서 터치 수신 */
   .btn-mobile-start {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 100;
+    z-index: 110;
     padding: 1rem 2rem;
     font-size: 1rem;
     width: auto;
     box-shadow: 0 6px 30px rgba(0, 245, 255, 0.4);
+    pointer-events: auto;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body.game-started .btn-mobile-start {
