@@ -243,25 +243,23 @@ body {
   }
 
   /* 모바일: 전체 화면 게임 레이아웃 */
-  * {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-  }
-
   html,
   body {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
     margin: 0;
     padding: 0;
   }
 
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+
   .app {
-    position: fixed;
+    position: absolute;
     inset: 0;
-    padding: 0;
-    max-width: 100%;
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -270,42 +268,41 @@ body {
     background: var(--bg-deep);
   }
 
+  /* 헤더 - 상단 고정, 최소 높이 */
   .header {
     flex: 0 0 auto;
-    padding: 1rem;
+    padding: 0.75rem 0.5rem;
     text-align: center;
-    border-bottom: 1px solid rgba(0, 245, 255, 0.2);
+    border-bottom: 1px solid rgba(0, 245, 255, 0.15);
     z-index: 5;
+    background: var(--bg-deep);
   }
 
   .header .title {
-    font-size: 1.2rem;
-    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    margin: 0;
+    line-height: 1.2;
   }
 
   .header .subtitle {
     display: none;
   }
 
+  /* 게임 영역 - 헤더 아래 전체 */
   .main {
+    position: relative;
     flex: 1;
     width: 100%;
-    min-height: 0;
+    overflow: hidden;
     padding: 0;
     margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .game-and-hud {
-    position: relative;
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
-    max-width: none;
-    padding: 0;
-    margin: 0;
-    flex: none;
   }
 
   .board-wrap {
@@ -315,10 +312,9 @@ body {
     height: 100%;
     padding: 0;
     border-radius: 0;
-    background: rgba(6, 8, 18, 0.95);
+    background: rgba(6, 8, 18, 0.98);
     box-shadow: none;
     transform: none !important;
-    order: unset;
   }
 
   #gameCanvas {
@@ -349,17 +345,17 @@ body {
   /* 점수/레벨/라인 한 줄 표시 */
   .info-stats {
     position: absolute;
-    top: 3%;
+    top: 2.5%;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 1.2rem;
-    background: rgba(15, 18, 35, 0.65);
+    gap: 1.3rem;
+    background: rgba(15, 18, 35, 0.68);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1.5px solid #ff4466;
+    border: 2px solid #ff4466;
     border-radius: 8px;
-    padding: 0.6rem 1rem;
+    padding: 0.65rem 1.1rem;
     font-size: 0.85rem;
     color: var(--text);
     white-space: nowrap;
@@ -380,10 +376,10 @@ body {
 
   .info-card {
     position: absolute;
-    background: rgba(20, 24, 45, 0.65);
+    background: rgba(20, 24, 45, 0.68);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1.5px solid #ff4466;
+    border: 2px solid #ff4466;
     border-radius: 8px;
     padding: 0.5rem;
     font-size: 0.7rem;
@@ -407,8 +403,8 @@ body {
   }
 
   .info-next {
-    top: 2.5%;
-    right: 2%;
+    top: 2%;
+    right: 1%;
     padding: 0.5rem;
   }
 
@@ -432,8 +428,8 @@ body {
   .touch-btn {
     position: absolute;
     pointer-events: auto;
-    width: 3rem;
-    height: 3rem;
+    width: 3.2rem;
+    height: 3.2rem;
     padding: 0;
     display: flex;
     align-items: center;
@@ -441,70 +437,68 @@ body {
     border-radius: 8px;
     font-size: 1.3rem;
     touch-action: manipulation;
-    border: 2px solid #ff4466;
-    background: rgba(15, 18, 35, 0.6);
-    box-shadow: 0 3px 10px rgba(255, 68, 102, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    border: 2.5px solid #ff4466;
+    background: rgba(15, 18, 35, 0.65);
+    box-shadow: 0 3px 12px rgba(255, 68, 102, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     color: #ff4466;
     font-family: Orbitron, sans-serif;
     font-weight: 700;
     cursor: pointer;
     transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
-    z-index: 20;
+    z-index: 25;
   }
 
   .touch-btn:active {
-    transform: scale(0.90);
-    background: rgba(25, 30, 55, 0.75);
-    box-shadow: 0 2px 6px rgba(255, 68, 102, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transform: scale(0.88);
+    background: rgba(25, 30, 55, 0.8);
+    box-shadow: 0 2px 6px rgba(255, 68, 102, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
-  /* 버튼 위치: 좌우 세로 배치 */
+  /* 버튼 위치: 좌우 세로 배치 - 절대값 사용 */
   /* 좌측 버튼 */
   .btn-left {
-    left: 1%;
-    top: 28%;
-    transform: translateY(-50%);
+    left: 1.5%;
+    top: 25%;
   }
 
   .btn-soft-drop {
-    left: 1%;
+    left: 1.5%;
     top: 50%;
     transform: translateY(-50%);
   }
 
   .btn-hard-drop {
-    left: 1%;
-    top: 72%;
+    left: 1.5%;
+    top: 75%;
     transform: translateY(-50%);
-    width: 3.3rem;
-    height: 3.3rem;
+    width: 3.5rem;
+    height: 3.5rem;
     font-size: 1.4rem;
   }
 
   /* 우측 버튼 */
   .btn-right {
-    right: 1%;
-    top: 28%;
-    transform: translateY(-50%);
+    right: 1.5%;
+    top: 25%;
   }
 
   .btn-rotate {
-    right: 1%;
+    right: 1.5%;
     top: 50%;
     transform: translateY(-50%);
   }
 
   .btn-pause {
-    right: 1%;
-    top: 72%;
+    right: 1.5%;
+    top: 75%;
     transform: translateY(-50%);
   }
 
   /* 헤더의 게임 시작 버튼 (모바일) */
   .btn-start-header {
     display: none;
-    margin-top: 0.5rem;
-    padding: 0.65rem 1.5rem;
+    margin-top: 0.4rem;
+    padding: 0.6rem 1.5rem;
     font-size: 0.85rem;
     width: auto;
     margin-left: auto;
@@ -512,8 +506,8 @@ body {
     box-shadow: 0 4px 20px rgba(0, 245, 255, 0.3);
   }
 
-  .btn-start-header:hover {
-    box-shadow: 0 6px 28px rgba(179, 102, 255, 0.45);
+  .btn-start-header:active {
+    transform: translateY(0);
   }
 
   /* 시작 버튼 (게임 오버레이 위) - 숨김 */
@@ -522,10 +516,8 @@ body {
   }
 
   /* 모바일에서 헤더 버튼 표시 */
-  @media (max-width: 900px) {
-    .btn-start-header {
-      display: block;
-    }
+  .btn-start-header {
+    display: block;
   }
 
   /* 실제 게임 시작 후 헤더 버튼 숨김 */
