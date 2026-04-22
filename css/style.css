@@ -395,8 +395,9 @@ body {
     right: calc(0.75rem + env(safe-area-inset-right, 0px));
     left: auto;
     margin: 0;
-    width: 26px;
-    height: 26px;
+    /* 이전 26px 대비 ~40% 확대(≈36px) */
+    width: 36px;
+    height: 36px;
     padding: 0;
     box-sizing: border-box;
     display: flex;
@@ -408,21 +409,21 @@ body {
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
     z-index: 15;
     pointer-events: none;
   }
 
   .info-next canvas {
-    width: 26px;
-    height: 26px;
+    width: 36px;
+    height: 36px;
     max-width: 100%;
     max-height: 100%;
     display: block;
     margin: 0;
     padding: 0;
-    border-radius: 3px;
+    border-radius: 4px;
     background: rgba(6, 8, 18, 0.95);
     vertical-align: top;
   }

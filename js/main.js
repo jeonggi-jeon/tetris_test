@@ -22,8 +22,8 @@ let NEXT_CELL = 24;
 const MOBILE_TOP_RESERVED_PX = 72;
 /** 하단 홈 인디케이터·여백 (터치 버튼은 화면 중앙에 있음) */
 const MOBILE_BOTTOM_RESERVED_PX = 24;
-/** 우측 상단 미리보기·여백 — 가로 격자 계산 시 빼서 플레이 영역과 겹침 완화 */
-const MOBILE_RIGHT_RESERVED_PX = 52;
+/** 우측 상단 미리보기(≈36px)·여백 — 가로 격자와 겹침 완화 */
+const MOBILE_RIGHT_RESERVED_PX = 64;
 
 /** @type {number} */
 let mobileBoardOffsetX = 0;
