@@ -220,10 +220,13 @@ export function drawMain(
  */
 export function drawNext(ctx, nextType, cellSize, transparentBackground = false) {
   const canvas = ctx.canvas;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  /* HiDPI: canvas.width 는 비트맵(px×dpr). 그리기 좌표는 setTransform(dpr) 기준 CSS 픽셀 = clientWidth/Height */
+  const cw = canvas.clientWidth || 1;
+  const ch = canvas.clientHeight || 1;
+  ctx.clearRect(0, 0, cw, ch);
   if (!transparentBackground) {
     ctx.fillStyle = "rgba(8,10,22,0.92)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, cw, ch);
   }
 
   if (!nextType) return;
@@ -241,10 +244,8 @@ export function drawNext(ctx, nextType, cellSize, transparentBackground = false)
   }
   const bw = maxC - minC + 1;
   const bh = maxR - minR + 1;
-  const ox =
-    (canvas.width / cellSize - bw) / 2 - minC;
-  const oy =
-    (canvas.height / cellSize - bh) / 2 - minR;
+  const ox = (cw / cellSize - bw) / 2 - minC;
+  const oy = (ch / cellSize - bh) / 2 - minR;
 
-  drawPieceAt(ctx, nextType, 0, ox, oy, cellSize, canvas.height, {});
+  drawPieceAt(ctx, nextType, 0, ox, oy, cellSize, ch, {});
 }
