@@ -41,6 +41,7 @@ const levelMobileEl = document.getElementById("levelMobile");
 const linesMobileEl = document.getElementById("linesMobile");
 const finalScoreEl = document.getElementById("finalScore");
 const btnStart = document.getElementById("btnStart");
+const btnStartHeader = document.getElementById("btnStartHeader");
 const btnRestart = document.getElementById("btnRestart");
 
 let reducedMotion = window.matchMedia(
@@ -337,7 +338,7 @@ function startGameSession() {
 }
 
 btnStart.addEventListener("click", startGameSession);
-
+if (btnStartHeader) btnStartHeader.addEventListener("click", startGameSession);
 btnRestart.addEventListener("click", startGameSession);
 
 window.addEventListener("keydown", onKeyDown);

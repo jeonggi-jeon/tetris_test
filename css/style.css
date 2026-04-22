@@ -330,14 +330,45 @@ body {
     z-index: 10;
   }
 
+  /* 점수/레벨/라인 한 줄 표시 */
+  .info-stats {
+    position: absolute;
+    top: 2%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1.5rem;
+    background: rgba(15, 18, 35, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(255, 50, 100, 0.5);
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .stat-item {
+    font-family: Orbitron, monospace;
+    font-weight: 600;
+    color: #ff6666;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-item span {
+    color: var(--text);
+    font-weight: 700;
+  }
+
   .info-card {
     position: absolute;
     background: rgba(20, 24, 45, 0.65);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(0, 245, 255, 0.3);
+    border: 1.5px solid rgba(255, 50, 100, 0.4);
     border-radius: 8px;
-    padding: 0.4rem 0.6rem;
+    padding: 0.5rem;
     font-size: 0.7rem;
   }
 
@@ -346,8 +377,9 @@ body {
     margin: 0 0 0.1rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--accent-cyan);
-    opacity: 0.8;
+    color: #ff6666;
+    opacity: 0.9;
+    font-weight: 700;
   }
 
   .info-card .stat.value {
@@ -356,30 +388,15 @@ body {
     font-variant-numeric: tabular-nums;
   }
 
-  .info-score {
-    top: 3%;
-    left: 1.5%;
-  }
-
-  .info-level {
-    top: 3%;
-    right: 13.5%;
-  }
-
-  .info-lines {
-    top: 3%;
-    right: 1.5%;
-  }
-
   .info-next {
-    bottom: 12.5%;
-    right: 1.5%;
+    top: 2%;
+    right: 2%;
     padding: 0.5rem;
   }
 
   .info-next canvas {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     display: block;
     margin: 0.25rem auto 0;
     border-radius: 5px;
@@ -397,90 +414,101 @@ body {
   .touch-btn {
     position: absolute;
     pointer-events: auto;
-    width: 3rem;
-    height: 3rem;
+    width: 3.2rem;
+    height: 3.2rem;
     padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     touch-action: manipulation;
-    border: 1.5px solid rgba(0, 245, 255, 0.5);
-    background: linear-gradient(165deg, rgba(30, 36, 70, 0.75), rgba(14, 18, 38, 0.88));
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    color: var(--text);
+    border: 2px solid #ff4466;
+    background: rgba(15, 18, 35, 0.5);
+    box-shadow: 0 3px 10px rgba(255, 68, 102, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    color: #ff4466;
     font-family: Orbitron, sans-serif;
     font-weight: 700;
     cursor: pointer;
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
   }
 
   .touch-btn:active {
-    transform: scale(0.90);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transform: scale(0.92);
+    background: rgba(25, 30, 55, 0.7);
+    box-shadow: 0 2px 6px rgba(255, 68, 102, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
-  /* 버튼 위치 조정 */
-  .btn-pause {
-    top: 1.5%;
-    left: 1.5%;
-  }
-
-  .btn-rotate {
-    top: 1.5%;
-    right: 1.5%;
-  }
-
+  /* 버튼 위치: 좌우 세로 배치 */
+  /* 좌측 버튼 */
   .btn-left {
-    bottom: 8%;
-    left: 2.5%;
+    left: 2%;
+    top: 25%;
   }
 
   .btn-soft-drop {
-    bottom: 8%;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  .btn-right {
-    bottom: 8%;
-    right: 2.5%;
+    left: 2%;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .btn-hard-drop {
-    width: 3.8rem;
-    height: 3.8rem;
-    bottom: 1.5%;
-    right: 2.5%;
+    left: 2%;
+    bottom: 15%;
+    width: 3.5rem;
+    height: 3.5rem;
     font-size: 1.4rem;
-    border-color: rgba(255, 136, 68, 0.65);
-    background: linear-gradient(165deg, rgba(80, 40, 30, 0.75), rgba(30, 18, 24, 0.9));
   }
 
-  /* 시작 버튼 (게임 오버레이 위) */
-  .btn-start-overlay {
-    position: absolute;
+  /* 우측 버튼 */
+  .btn-right {
+    right: 2%;
+    top: 25%;
+  }
+
+  .btn-rotate {
+    right: 2%;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 100;
-    padding: 0.85rem 1.8rem;
-    font-size: 0.95rem;
-    width: auto;
-    box-shadow: 0 6px 30px rgba(0, 245, 255, 0.4);
+    transform: translateY(-50%);
   }
 
-  .btn-start-overlay:hover {
-    transform: translate(-50%, -50%) translateY(-2px);
-    box-shadow: 0 8px 38px rgba(0, 245, 255, 0.5);
+  .btn-pause {
+    right: 2%;
+    bottom: 15%;
   }
 
-  /* 실제 게임 시작 후 숨김 */
-  body.game-started .btn-start-overlay {
+  /* 헤더의 게임 시작 버튼 (모바일) */
+  .btn-start-header {
+    display: none;
+    margin-top: 0.75rem;
+    padding: 0.75rem 2rem;
+    font-size: 0.9rem;
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(0, 245, 255, 0.3);
+  }
+
+  .btn-start-header:hover {
+    box-shadow: 0 6px 28px rgba(179, 102, 255, 0.45);
+  }
+
+  /* 시작 버튼 (게임 오버레이 위) - 숨김 */
+  .btn-start-overlay {
+    display: none !important;
+  }
+
+  /* 모바일에서 헤더 버튼 표시 */
+  @media (max-width: 900px) {
+    .btn-start-header {
+      display: block;
+    }
+  }
+
+  /* 실제 게임 시작 후 헤더 버튼 숨김 */
+  body.game-started .btn-start-header {
     display: none;
   }
 
+  body.game-started .info-stats,
   body.game-started .info-card,
   body.game-started .touch-btn {
     pointer-events: auto;
