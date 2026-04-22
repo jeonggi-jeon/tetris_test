@@ -386,33 +386,43 @@ body {
     font-weight: 700;
   }
 
-  /* 다음 조각 — 화면 오른쪽 위 모서리에만 작게 고정 */
+  /* 다음 조각 — 우측 상단(모서리에 붙이지 않고 안쪽으로 여백) */
   .info-next {
     position: fixed;
-    top: calc(0.28rem + env(safe-area-inset-top, 0px));
-    right: calc(0.28rem + env(safe-area-inset-right, 0px));
+    top: calc(0.35rem + env(safe-area-inset-top, 0px));
+    right: calc(0.75rem + env(safe-area-inset-right, 0px));
     left: auto;
     margin: 0;
-    width: fit-content;
-    max-width: none;
-    background: rgba(12, 14, 28, 0.72);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    contain: layout style paint;
+    background: rgba(10, 12, 22, 0.88);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     border: none;
-    border-radius: 6px;
-    padding: 0.15rem 0.22rem 0.22rem;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
     z-index: 15;
     pointer-events: none;
   }
 
   .info-next canvas {
-    width: 34px;
-    height: 34px;
+    width: 26px;
+    height: 26px;
+    max-width: 100%;
+    max-height: 100%;
     display: block;
-    margin: 0 auto;
+    margin: 0;
+    padding: 0;
     border-radius: 3px;
-    background: rgba(6, 8, 18, 0.92);
+    background: rgba(6, 8, 18, 0.95);
+    vertical-align: top;
   }
 
   /* 터치 버튼: 좌우 열을 화면 세로 중앙에 배치 (.touch-btn 기본 네온 스타일과 동일) */
@@ -470,20 +480,20 @@ body {
     background: linear-gradient(165deg, rgba(120, 64, 52, 1), rgba(48, 32, 36, 1));
   }
 
-  /* 좌열 5% — 위: 소프트드롭, 가운데: 왼쪽이동, 아래: 하드드롭 (이동↔↓ 자리 맞교환) */
+  /* 좌열 5% — 위: 소프트드롭, 가운데: 하드드롭, 아래: 왼쪽이동(←) */
   .btn-soft-drop {
     left: 5%;
     top: calc(50% - 4.25rem);
     transform: translateY(-50%);
   }
 
-  .btn-left {
+  .btn-hard-drop {
     left: 5%;
     top: 50%;
     transform: translateY(-50%);
   }
 
-  .btn-hard-drop {
+  .btn-left {
     left: 5%;
     top: calc(50% + 4.25rem);
     transform: translateY(-50%);
