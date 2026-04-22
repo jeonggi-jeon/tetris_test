@@ -225,7 +225,254 @@ body {
   }
 }
 
+/* 모바일/PC 레이아웃 분리 */
+.mobile-layout {
+  display: none;
+}
+
+.pc-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 @media (max-width: 900px) {
+  /* 모바일에서만 mobile-layout 표시 */
+  .mobile-layout {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg-deep);
+    z-index: 1;
+  }
+
+  .pc-layout {
+    display: none !important;
+  }
+
+  /* 배경 */
+  .mobile-layout .bg-aurora {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  /* 게임 컨테이너 - 전체 화면 */
+  .mobile-game-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* 게임 캔버스 */
+  #gameCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 0;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  .flash-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: rgba(255, 255, 255, 0.35);
+    mix-blend-mode: overlay;
+  }
+
+  .flash-overlay.active {
+    animation: flash-pulse 0.35s ease-out forwards;
+  }
+
+  /* 게임 오버레이 - 정보와 버튼 */
+  .game-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* 점수/레벨/라인 */
+  .info-stats {
+    position: fixed;
+    top: 2%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1.3rem;
+    background: rgba(15, 18, 35, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 2px solid #ff4466;
+    border-radius: 8px;
+    padding: 0.65rem 1.1rem;
+    font-size: 0.85rem;
+    color: var(--text);
+    white-space: nowrap;
+    z-index: 15;
+  }
+
+  .stat-item {
+    font-family: Orbitron, monospace;
+    font-weight: 600;
+    color: #ff6666;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-item span {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  /* 다음 조각 정보 */
+  .info-next {
+    position: fixed;
+    top: 2%;
+    right: 2%;
+    background: rgba(20, 24, 45, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 2px solid #ff4466;
+    border-radius: 8px;
+    padding: 0.5rem;
+    z-index: 15;
+  }
+
+  .info-next .card-title {
+    font-size: 0.55rem;
+    margin: 0 0 0.1rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #ff6666;
+    opacity: 0.9;
+    font-weight: 700;
+  }
+
+  .info-next canvas {
+    width: 65px;
+    height: 65px;
+    display: block;
+    margin: 0.25rem auto 0;
+    border-radius: 5px;
+    background: rgba(8, 10, 22, 0.85);
+  }
+
+  /* 터치 버튼 */
+  .mobile-controls {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20;
+  }
+
+  .touch-btn {
+    position: fixed;
+    pointer-events: auto;
+    width: 3.5rem;
+    height: 3.5rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 1.4rem;
+    touch-action: manipulation;
+    border: 2.5px solid #ff4466;
+    background: rgba(15, 18, 35, 0.7);
+    box-shadow: 0 4px 15px rgba(255, 68, 102, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    color: #ff4466;
+    font-family: Orbitron, sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.1s ease;
+    z-index: 25;
+  }
+
+  .touch-btn:active {
+    transform: scale(0.88);
+    background: rgba(25, 30, 55, 0.85);
+  }
+
+  /* 좌측 버튼 */
+  .btn-left {
+    left: 2%;
+    top: 25%;
+    transform: translateY(-50%);
+  }
+
+  .btn-soft-drop {
+    left: 2%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .btn-hard-drop {
+    left: 2%;
+    top: 75%;
+    transform: translateY(-50%);
+    width: 4rem;
+    height: 4rem;
+    font-size: 1.6rem;
+  }
+
+  /* 우측 버튼 */
+  .btn-right {
+    right: 2%;
+    top: 25%;
+    transform: translateY(-50%);
+  }
+
+  .btn-rotate {
+    right: 2%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .btn-pause {
+    right: 2%;
+    top: 75%;
+    transform: translateY(-50%);
+  }
+
+  /* 시작 버튼 */
+  .btn-mobile-start {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    width: auto;
+    box-shadow: 0 6px 30px rgba(0, 245, 255, 0.4);
+  }
+
+  body.game-started .btn-mobile-start {
+    display: none;
+  }
+
+  body.game-started .info-stats,
+  body.game-started .info-next,
+  body.game-started .touch-btn {
+    pointer-events: auto;
+  }
+}
+
+@media (min-width: 901px) {
   .desktop-only-hint {
     display: none !important;
   }

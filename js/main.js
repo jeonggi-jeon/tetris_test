@@ -40,8 +40,8 @@ const scoreMobileEl = document.getElementById("scoreMobile");
 const levelMobileEl = document.getElementById("levelMobile");
 const linesMobileEl = document.getElementById("linesMobile");
 const finalScoreEl = document.getElementById("finalScore");
-const btnStart = document.getElementById("btnStart");
-const btnStartHeader = document.getElementById("btnStartHeader");
+const btnStartMobile = document.getElementById("btnStartMobile");
+const btnStartPC = document.getElementById("btnStartPC");
 const btnRestart = document.getElementById("btnRestart");
 
 let reducedMotion = window.matchMedia(
@@ -337,9 +337,9 @@ function startGameSession() {
   document.body.classList.add("game-started");
 }
 
-btnStart.addEventListener("click", startGameSession);
-if (btnStartHeader) btnStartHeader.addEventListener("click", startGameSession);
-btnRestart.addEventListener("click", startGameSession);
+if (btnStartMobile) btnStartMobile.addEventListener("click", startGameSession);
+if (btnStartPC) btnStartPC.addEventListener("click", startGameSession);
+if (btnRestart) btnRestart.addEventListener("click", startGameSession);
 
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);
