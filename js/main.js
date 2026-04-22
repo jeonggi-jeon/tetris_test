@@ -19,9 +19,9 @@ import {
 let CELL = 32;
 let NEXT_CELL = 24;
 /** 상단 정보 영역 예상 높이(px) — css/style.css 의 .info-stats 와 대략 일치 */
-const MOBILE_TOP_RESERVED_PX = 92;
+const MOBILE_TOP_RESERVED_PX = 72;
 /** 하단 홈 인디케이터·여백 (터치 버튼은 화면 중앙에 있음) */
-const MOBILE_BOTTOM_RESERVED_PX = 40;
+const MOBILE_BOTTOM_RESERVED_PX = 24;
 
 /** @type {number} */
 let mobileBoardOffsetX = 0;
@@ -111,6 +111,7 @@ const finalScoreEl = document.getElementById("finalScore");
 const btnStartMobile = document.getElementById("btnStartMobile");
 const btnStartPC = document.getElementById("btnStartPC");
 const btnRestart = document.getElementById("btnRestart");
+const btnPauseResume = document.getElementById("btnPauseResume");
 
 let reducedMotion = window.matchMedia(
   "(prefers-reduced-motion: reduce)",
@@ -456,6 +457,12 @@ function startGameSession() {
 if (btnStartMobile) btnStartMobile.addEventListener("click", startGameSession);
 if (btnStartPC) btnStartPC.addEventListener("click", startGameSession);
 if (btnRestart) btnRestart.addEventListener("click", startGameSession);
+
+if (btnPauseResume) {
+  btnPauseResume.addEventListener("click", () => {
+    if (paused) togglePause();
+  });
+}
 
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);
