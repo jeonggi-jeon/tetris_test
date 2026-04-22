@@ -386,38 +386,44 @@ body {
     font-weight: 700;
   }
 
-  /* 다음 조각 정보 */
+  /* 다음 조각 — 우측 상단 코너, 작게 (플레이 영역 최소 방해) */
   .info-next {
     position: fixed;
-    top: calc(2% + env(safe-area-inset-top, 0px));
-    right: calc(2% + env(safe-area-inset-right, 0px));
-    background: var(--glass-bg);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    padding: 0.5rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    top: calc(0.35rem + env(safe-area-inset-top, 0px));
+    right: calc(0.35rem + env(safe-area-inset-right, 0px));
+    background: rgba(15, 18, 35, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 8px;
+    padding: 0.2rem 0.3rem 0.3rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
     z-index: 15;
+    max-width: min(38vw, 5.5rem);
+    pointer-events: none;
   }
 
   .info-next .card-title {
-    font-size: 0.55rem;
-    margin: 0 0 0.1rem;
-    letter-spacing: 0.15em;
+    font-size: 0.42rem;
+    margin: 0 0 0.08rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--accent-cyan);
-    opacity: 0.95;
-    font-weight: 700;
+    opacity: 0.88;
+    font-weight: 600;
+    text-shadow: none;
+    -webkit-text-stroke: 0 transparent;
+    paint-order: normal;
+    text-align: center;
   }
 
   .info-next canvas {
-    width: 65px;
-    height: 65px;
+    width: 42px;
+    height: 42px;
     display: block;
-    margin: 0.25rem auto 0;
-    border-radius: 5px;
-    background: rgba(8, 10, 22, 0.85);
+    margin: 0 auto;
+    border-radius: 4px;
+    background: rgba(8, 10, 22, 0.82);
   }
 
   /* 터치 버튼: 좌우 열을 화면 세로 중앙에 배치 (.touch-btn 기본 네온 스타일과 동일) */
@@ -532,8 +538,8 @@ body {
     display: none;
   }
 
+  /* 다음 미리보기는 클릭 불필요 — 터치가 보드로 통과하지 않도록 제외 */
   body.game-started .info-stats,
-  body.game-started .info-next,
   body.game-started .touch-btn {
     pointer-events: auto;
   }
