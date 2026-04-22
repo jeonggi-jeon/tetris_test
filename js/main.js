@@ -465,6 +465,85 @@ function bindTouchControls() {
   });
 }
 
+/** 셀 너비의 일정 비율을 넘을 때마다 1칸 (버튼 DAS와 맞는 느낌) */
+const MOBILE_BOARD_DRAG_STRIDE = 0.42;
+function getMobileDragThreshold() {
+  return Math.max(CELL * MOBILE_BOARD_DRAG_STRIDE, 8);
+}
+const gameDrag = {
+  active: false,
+  lastClientX: 0,
+  /** @type {number | null} */
+  pointerId: null,
+};
+
+function bindGameCanvasPointerDrag() {
+  if (!gameCanvasMobile) return;
+
+  const end = (e) => {
+    if (gameDrag.pointerId != null && e.pointerId === gameDrag.pointerId) {
+      try {
+        gameCanvasMobile.releasePointerCapture(gameDrag.pointerId);
+      } catch {
+        /* no-op */
+      }
+      gameDrag.active = false;
+      gameDrag.pointerId = null;
+    }
+  };
+
+  gameCanvasMobile.addEventListener(
+    "pointerdown",
+    (e) => {
+      if (e.button !== 0) return;
+      if (!isMobileViewport() || !playing || paused || state.gameOver) return;
+      if (!state.current) return;
+      e.preventDefault();
+      gameDrag.active = true;
+      gameDrag.pointerId = e.pointerId;
+      gameDrag.lastClientX = e.clientX;
+      try {
+        gameCanvasMobile.setPointerCapture(e.pointerId);
+      } catch {
+        /* no-op */
+      }
+    },
+    { passive: false },
+  );
+
+  gameCanvasMobile.addEventListener(
+    "pointermove",
+    (e) => {
+      if (!gameDrag.active || gameDrag.pointerId !== e.pointerId) return;
+      if (!playing || paused || state.gameOver || !state.current) {
+        end(e);
+        return;
+      }
+      e.preventDefault();
+      const t = getMobileDragThreshold();
+      const x = e.clientX;
+      while (x - gameDrag.lastClientX >= t) {
+        if (!tryMove(state, 1, 0)) break;
+        gameDrag.lastClientX += t;
+      }
+      while (gameDrag.lastClientX - x >= t) {
+        if (!tryMove(state, -1, 0)) break;
+        gameDrag.lastClientX -= t;
+      }
+    },
+    { passive: false },
+  );
+
+  gameCanvasMobile.addEventListener("pointerup", end);
+  gameCanvasMobile.addEventListener("pointercancel", end);
+  gameCanvasMobile.addEventListener("lostpointercapture", (e) => {
+    if (e.pointerId === gameDrag.pointerId) {
+      gameDrag.active = false;
+      gameDrag.pointerId = null;
+    }
+  });
+}
+
 let lastStartSessionAt = 0;
 function startGameSession() {
   const now = performance.now();
@@ -503,6 +582,7 @@ window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);
 
 bindTouchControls();
+bindGameCanvasPointerDrag();
 
 function onViewportChange() {
   calculateCellSize();

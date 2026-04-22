@@ -303,7 +303,7 @@ body {
     min-height: 100dvh;
   }
 
-  /* 게임 캔버스 — 조작은 하단 버튼만 사용; 터치가 통과해야 시작 버튼·HUD가 동작함 */
+  /* 게임 캔버스 — 기본: 터치 통과(시작 버튼); 게임 중: 보드에서 좌우 드래그 이동 */
   #gameCanvasMobile {
     position: absolute;
     inset: 0;
@@ -315,6 +315,11 @@ body {
     image-rendering: crisp-edges;
     pointer-events: none;
     z-index: 0;
+  }
+
+  body.game-started #gameCanvasMobile {
+    pointer-events: auto;
+    touch-action: none;
   }
 
   .mobile-layout .flash-overlay {
