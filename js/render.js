@@ -160,12 +160,20 @@ function drawBoardLayer(ctx, board, cellSize, canvasHeight) {
   }
 }
 
+/**
+ * @param {object} [opts] drawBlock 옵션 + nextPreview(다음 조각 캔버스만 true — 보드 좌표의 BUFFER_ROWS 보정 제외)
+ */
 function drawPieceAt(ctx, type, rotation, ox, oy, cellSize, canvasHeight, opts) {
+  const o = opts ?? {};
+  const nextPreview = o.nextPreview === true;
+  const blockOpts = nextPreview
+    ? { ghost: o.ghost, alpha: o.alpha }
+    : o;
   const cells = getPieceCells(type, rotation, ox, oy);
   for (const [r, c] of cells) {
-    const cy = cellScreenY(r, cellSize);
+    const cy = nextPreview ? r * cellSize : cellScreenY(r, cellSize);
     if (cy + cellSize < 0 || cy > canvasHeight) continue;
-    drawBlock(ctx, c * cellSize, cy, cellSize, type, opts);
+    drawBlock(ctx, c * cellSize, cy, cellSize, type, blockOpts);
   }
 }
 
@@ -247,5 +255,5 @@ export function drawNext(ctx, nextType, cellSize, transparentBackground = false)
   const ox = (cw / cellSize - bw) / 2 - minC;
   const oy = (ch / cellSize - bh) / 2 - minR;
 
-  drawPieceAt(ctx, nextType, 0, ox, oy, cellSize, ch, {});
+  drawPieceAt(ctx, nextType, 0, ox, oy, cellSize, ch, { nextPreview: true });
 }

@@ -1,8 +1,9 @@
-import { COLS, VISIBLE_ROWS } from "./constants.js";
+import { BUFFER_ROWS, COLS, ROWS, VISIBLE_ROWS } from "./constants.js";
 import {
   createGameState,
   startGame,
   updatePlaying,
+  getPieceCells,
   tryMove,
   tryRotate,
   hardDrop,
@@ -346,6 +347,24 @@ function actionRotate() {
   tryRotate(state, 1);
 }
 
+/** 모바일 캔버스(뷰포트) 좌표가 현재 조각이 차지한 칸에 해당하는지 */
+function isClientPointOnCurrentFallingPiece(clientX, clientY) {
+  if (!state.current || !gameCanvasMobile) return false;
+  const rect = gameCanvasMobile.getBoundingClientRect();
+  const localX = clientX - rect.left;
+  const localY = clientY - rect.top;
+  if (!Number.isFinite(localX) || !Number.isFinite(localY)) return false;
+  const c = Math.floor((localX - mobileBoardOffsetX) / CELL);
+  const r = Math.floor((localY - mobileBoardOffsetY) / CELL) + BUFFER_ROWS;
+  if (c < 0 || c >= COLS || r < 0 || r >= ROWS) return false;
+  return getPieceCells(
+    state.current.type,
+    state.current.rotation,
+    state.current.x,
+    state.current.y,
+  ).some(([pr, pc]) => pr === r && pc === c);
+}
+
 function actionHardDrop() {
   if (!playing || paused || state.gameOver) return;
   const lr = hardDrop(state);
@@ -470,18 +489,46 @@ const MOBILE_BOARD_DRAG_STRIDE = 0.42;
 function getMobileDragThreshold() {
   return Math.max(CELL * MOBILE_BOARD_DRAG_STRIDE, 8);
 }
+/** 이보다 짧으면 드래그(좌우이동)가 아닌 '탭'으로 보고 조각 위에서 회전 */
+const MOBILE_CANVAS_TAP_MAX_PX = 16;
+/** 터치 시작 대비 이 정도 이상·세로(아래)가 우세하면 하드 드롭 1회 */
+const MOBILE_FLICK_DOWN_MIN_PX = 36;
 const gameDrag = {
   active: false,
   lastClientX: 0,
+  startClientX: 0,
+  startClientY: 0,
+  /** Draggable: 한 칸이라도 좌우로 이동에 성공하면 '탭 회전' 대비 취소 */
+  strafeThisPointer: false,
+  /** 하드 드롭 후 손 뗄 때까지 좌우 이동/중복 낙하 방지 */
+  lockedByHardDrop: false,
   /** @type {number | null} */
   pointerId: null,
 };
+
+function shouldMobileHardDropFromFlick(drx, dry) {
+  if (dry < MOBILE_FLICK_DOWN_MIN_PX) return false;
+  /* 아래(y 증가) — 가로 끌기보다 세로가 뚜렷할 때만 */
+  return dry >= Math.abs(drx) * 0.7;
+}
 
 function bindGameCanvasPointerDrag() {
   if (!gameCanvasMobile) return;
 
   const end = (e) => {
     if (gameDrag.pointerId != null && e.pointerId === gameDrag.pointerId) {
+      if (isMobileViewport() && playing && !paused && !state.gameOver) {
+        const dx = e.clientX - gameDrag.startClientX;
+        const dy = e.clientY - gameDrag.startClientY;
+        if (
+          !gameDrag.lockedByHardDrop
+          && !gameDrag.strafeThisPointer
+          && Math.hypot(dx, dy) < MOBILE_CANVAS_TAP_MAX_PX
+          && isClientPointOnCurrentFallingPiece(gameDrag.startClientX, gameDrag.startClientY)
+        ) {
+          actionRotate();
+        }
+      }
       try {
         gameCanvasMobile.releasePointerCapture(gameDrag.pointerId);
       } catch {
@@ -489,6 +536,7 @@ function bindGameCanvasPointerDrag() {
       }
       gameDrag.active = false;
       gameDrag.pointerId = null;
+      gameDrag.lockedByHardDrop = false;
     }
   };
 
@@ -502,6 +550,10 @@ function bindGameCanvasPointerDrag() {
       gameDrag.active = true;
       gameDrag.pointerId = e.pointerId;
       gameDrag.lastClientX = e.clientX;
+      gameDrag.startClientX = e.clientX;
+      gameDrag.startClientY = e.clientY;
+      gameDrag.strafeThisPointer = false;
+      gameDrag.lockedByHardDrop = false;
       try {
         gameCanvasMobile.setPointerCapture(e.pointerId);
       } catch {
@@ -520,14 +572,24 @@ function bindGameCanvasPointerDrag() {
         return;
       }
       e.preventDefault();
+      if (gameDrag.lockedByHardDrop) return;
+      const drx = e.clientX - gameDrag.startClientX;
+      const dry = e.clientY - gameDrag.startClientY;
+      if (shouldMobileHardDropFromFlick(drx, dry)) {
+        actionHardDrop();
+        gameDrag.lockedByHardDrop = true;
+        return;
+      }
       const t = getMobileDragThreshold();
       const x = e.clientX;
       while (x - gameDrag.lastClientX >= t) {
-        if (!tryMove(state, 1, 0)) break;
+        if (tryMove(state, 1, 0)) gameDrag.strafeThisPointer = true;
+        else break;
         gameDrag.lastClientX += t;
       }
       while (gameDrag.lastClientX - x >= t) {
-        if (!tryMove(state, -1, 0)) break;
+        if (tryMove(state, -1, 0)) gameDrag.strafeThisPointer = true;
+        else break;
         gameDrag.lastClientX -= t;
       }
     },
@@ -540,6 +602,7 @@ function bindGameCanvasPointerDrag() {
     if (e.pointerId === gameDrag.pointerId) {
       gameDrag.active = false;
       gameDrag.pointerId = null;
+      gameDrag.lockedByHardDrop = false;
     }
   });
 }
