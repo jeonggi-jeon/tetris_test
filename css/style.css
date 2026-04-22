@@ -393,10 +393,10 @@ body {
     font-weight: 700;
   }
 
-  /* 다음 조각 — 우측 상단, 뒤(게임 화면)이 비치도록 100% 투명 */
+  /* 다음 조각 — .info-stats 와 비슷한 위쪽 띠(0.35rem+safe 만 쓰면 너무 상단) */
   .info-next {
     position: fixed;
-    top: calc(0.35rem + env(safe-area-inset-top, 0px));
+    top: calc(2% + 0.2rem + env(safe-area-inset-top, 0px));
     /* right 를 키우면 화면 오른쪽 끝에서 안쪽(왼쪽)으로 이동 */
     right: calc(1.2rem + env(safe-area-inset-right, 0px));
     left: auto;
