@@ -130,10 +130,12 @@ motionMq.addEventListener("change", (e) => {
 let ctx;
 
 const nextCtx = setupHiDpiCanvas(nextCanvas, nextCanvas.width, nextCanvas.height, false);
+/* 모바일 CSS(≈42px)와 일치 — 100px 버퍼 + 작은 화면 표시 시 셀 스케일 불일치 방지 */
+const nextMobilePreviewPx = 42;
 const nextCtxMobile = setupHiDpiCanvas(
   nextCanvasMobile,
-  nextCanvasMobile.width,
-  nextCanvasMobile.height,
+  isMobileViewport() ? nextMobilePreviewPx : nextCanvasMobile.width,
+  isMobileViewport() ? nextMobilePreviewPx : nextCanvasMobile.height,
   false,
 );
 
@@ -169,6 +171,15 @@ function refreshGameCanvasContext() {
 }
 
 refreshGameCanvasContext();
+
+/** 모바일 next 캔버스(CSS ~42px) — 게임의 NEXT_CELL(큼)을 쓰면 4칸 막대가 캔버스 밖으로 나가 보이지 않음 */
+function getNextPreviewCellSize() {
+  if (!nextCanvasMobile) return 9;
+  const w = nextCanvasMobile.clientWidth;
+  const h = nextCanvasMobile.clientHeight;
+  const m = Math.min(w > 0 ? w : 42, h > 0 ? h : 42);
+  return Math.max(3, Math.min(11, Math.floor(m / 4.3)));
+}
 
 function getActiveFlashOverlay() {
   return isMobileViewport() ? flashOverlayMobile : flashOverlayPC;
@@ -251,7 +262,7 @@ function loop(ts) {
   drawNext(nextCtx, state.nextType, NEXT_CELL);
 
   const isMobile = isMobileViewport();
-  const nextCellMobile = isMobile ? NEXT_CELL : 30;
+  const nextCellMobile = isMobile ? getNextPreviewCellSize() : 30;
   drawNext(nextCtxMobile, state.nextType, nextCellMobile, true);
   syncHud();
 
@@ -506,6 +517,6 @@ if (window.visualViewport) {
 
 syncHud();
 drawNext(nextCtx, state.nextType, NEXT_CELL);
-const nextCellMobileInit = isMobileViewport() ? NEXT_CELL : 30;
+const nextCellMobileInit = isMobileViewport() ? getNextPreviewCellSize() : 30;
 drawNext(nextCtxMobile, state.nextType, nextCellMobileInit, true);
 requestAnimationFrame(loop);
