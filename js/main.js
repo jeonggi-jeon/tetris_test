@@ -491,8 +491,10 @@ function getMobileDragThreshold() {
 }
 /** 이보다 짧으면 드래그(좌우이동)가 아닌 '탭'으로 보고 조각 위에서 회전 */
 const MOBILE_CANVAS_TAP_MAX_PX = 16;
-/** 터치 시작 대비 이 정도 이상·세로(아래)가 우세하면 하드 드롭 1회 */
-const MOBILE_FLICK_DOWN_MIN_PX = 36;
+/** 아래로 확실히 긁었을 때만 하드 드롭(값↑ → 덜 예민) */
+const MOBILE_FLICK_DOWN_MIN_PX = 56;
+/** 세로 이동이 가로보다 충분히 커야 함(값↑ → 덜 예민, 보통 1.1~1.35) */
+const MOBILE_FLICK_DOWN_DOMINANCE = 1.2;
 const gameDrag = {
   active: false,
   lastClientX: 0,
@@ -508,8 +510,7 @@ const gameDrag = {
 
 function shouldMobileHardDropFromFlick(drx, dry) {
   if (dry < MOBILE_FLICK_DOWN_MIN_PX) return false;
-  /* 아래(y 증가) — 가로 끌기보다 세로가 뚜렷할 때만 */
-  return dry >= Math.abs(drx) * 0.7;
+  return dry >= Math.abs(drx) * MOBILE_FLICK_DOWN_DOMINANCE;
 }
 
 function bindGameCanvasPointerDrag() {
